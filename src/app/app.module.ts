@@ -15,6 +15,7 @@ import { DishdetailPage } from '../pages/dishdetail/dishdetail';
 import { FavoritesPage } from '../pages/favorites/favorites';
 import { ReservationPage } from '../pages/reservation/reservation';
 import { CommentPage } from '../pages/comment/comment';
+import { LoginPage } from '../pages/login/login';
 
 import { DishProvider } from '../providers/dish/dish';
 import { LeaderProvider } from '../providers/leader/leader';
@@ -26,8 +27,7 @@ import { HttpModule } from '@angular/http';
 
 import { baseURL } from '../shared/baseurl';
 
-
-
+import { IonicStorageModule } from '@ionic/storage';
 
 @NgModule({
   declarations: [
@@ -39,12 +39,14 @@ import { baseURL } from '../shared/baseurl';
     DishdetailPage,
     FavoritesPage,
     ReservationPage,
-    CommentPage
+    CommentPage,
+    LoginPage
   ],
   imports: [
     HttpModule,
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -56,7 +58,8 @@ import { baseURL } from '../shared/baseurl';
     DishdetailPage,
     FavoritesPage,
     ReservationPage,
-    CommentPage
+    CommentPage,
+    LoginPage
   ],
   providers: [
     StatusBar,
