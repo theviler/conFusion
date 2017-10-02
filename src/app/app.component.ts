@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, ModalController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -11,6 +11,7 @@ import { FavoritesPage } from '../pages/favorites/favorites';
 import { ReservationPage } from '../pages/reservation/reservation';
 import { LoginPage } from '../pages/login/login';
 // import { CommentPage } from '../pages/comment/comment';
+import { Network } from '@ionic-native/network';
 
 @Component({
   templateUrl: 'app.html'
@@ -19,13 +20,16 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = HomePage;
+  loading: any = null;
 
   pages: Array<{ title: string, icon: string, component: any }>;
 
   constructor(public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    private loadingCtrl: LoadingController,
+    private network: Network
   ) {
     this.initializeApp();
 
@@ -46,8 +50,34 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+
+      this.network.onDisconnect().subscribe(() => {
+        if (!this.loading) {
+          this.loading = this.loadingCtrl.create({
+            content: 'Network Disconnected'
+          });
+          this.loading.present();
+        }
+      });
+
+      this.network.onConnect().subscribe(() => {
+
+        // We just got a connection but we need to wait briefly
+        // before we determine the connection type. Might need to wait.
+        // prior to doing any api requests as well.
+        setTimeout(() => {
+          if (this.network.type === 'wifi') {
+            console.log('we got a wifi connection, woohoo!');
+          }
+        }, 3000);
+        if (this.loading) {
+          this.loading.dismiss();
+          this.loading = null;
+        }
+      });
     });
   }
+
 
   openPage(page) {
     // Reset the content nav to have just this page

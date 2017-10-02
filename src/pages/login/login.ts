@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ModalController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Storage } from '@ionic/storage';
 import { User } from '../../shared/user';
+
+import { RegisterPage } from '../register/register';
 
 /**
  * Generated class for the LoginPage page.
@@ -20,24 +22,26 @@ export class LoginPage {
   loginForm: FormGroup;
   user: User = { username: '', password: '' };
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
     public viewCtrl: ViewController,
     private formBuilder: FormBuilder,
-    private storage: Storage) {
+    private storage: Storage,
+    private modalCtrl: ModalController) {
 
-    storage.get('user').then(user => {
-      if (user) {
-        console.log(user);
-        this.user = user;
-        this.loginForm
-          .patchValue({
+    storage.get('user').then(
+      user => {
+        if (user) {
+          console.log(user);
+          this.user = user;
+          this.loginForm.patchValue({
             'username': this.user.username,
             'password': this.user.password
           });
-      }
-      else
-        console.log('user not defined');
-    });
+        }
+        else
+          console.log('user not defined');
+      });
 
 
     this.loginForm = this.formBuilder.group({
@@ -54,6 +58,12 @@ export class LoginPage {
 
   dismiss() {
     this.viewCtrl.dismiss();
+  }
+
+  openRegister() {
+    let modal = this.modalCtrl.create(RegisterPage);
+    modal.present();
+    modal.onDidDismiss(() => this.dismiss())
   }
 
   onSubmit() {
